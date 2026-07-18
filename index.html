@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clifford Wreifors — Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0c;
+    --bg-elev:#131316;
+    --bg-elev-2:#1a1a1e;
+    --border:#232327;
+    --text:#f3f3f0;
+    --muted:#8c8c94;
+    --accent:#ffb343;
+    --accent-dim:rgba(255,179,67,0.14);
+    --accent-glow:rgba(255,179,67,0.35);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--accent);color:#0a0a0c;}
+  a{color:inherit;text-decoration:none;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .display{font-family:'Space Grotesk',sans-serif;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px 40px;
+    background:linear-gradient(180deg, rgba(10,10,12,0.9), rgba(10,10,12,0));
+    backdrop-filter:blur(6px);
+  }
+  .logo{font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:0.02em;}
+  .logo .dot{color:var(--accent);}
+  .nav-links{display:flex;gap:32px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;}
+  .nav-links a{color:var(--muted);position:relative;padding-bottom:4px;transition:color .25s;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--accent);transition:width .25s;}
+  .nav-links a:hover::after{width:100%;}
+  @media (max-width:700px){ .nav-links{display:none;} }
+
+  /* ---------- HERO (full-bleed oversized type) ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:140px 40px 60px;
+    position:relative;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255,179,67,0.09), transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.012) 40px);
+  }
+  .hero-eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);
+    letter-spacing:0.08em;margin-bottom:8px;display:flex;align-items:center;gap:10px;
+  }
+  .hero-photo{
+    width:96px;height:96px;border-radius:50%;overflow:hidden;position:relative;
+    border:2px solid var(--accent);margin-bottom:28px;flex-shrink:0;
+    box-shadow:0 0 0 4px var(--bg), 0 0 24px rgba(255,179,67,0.18);
+  }
+  .hero-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .hero-photo .fallback{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg, var(--accent), #7a4a00);
+    font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:600;color:#0a0a0c;
+  }
+  .hero-eyebrow .pulse{
+    width:7px;height:7px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 0 var(--accent-glow);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 var(--accent-glow);}
+    70%{box-shadow:0 0 0 8px rgba(255,179,67,0);}
+    100%{box-shadow:0 0 0 0 rgba(255,179,67,0);}
+  }
+  .hero-stack{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;
+    font-size:clamp(3.5rem, 13vw, 10.5rem);
+    line-height:0.86;letter-spacing:-0.03em;
+    text-transform:uppercase;
+  }
+  .hero-stack .line{display:block;overflow:hidden;}
+  .hero-stack .line span{display:block;transform:translateY(110%);animation:riseUp 0.9s cubic-bezier(.2,.8,.2,1) forwards;}
+  .hero-stack .line:nth-child(1) span{animation-delay:.05s;}
+  .hero-stack .line:nth-child(2) span{animation-delay:.15s;color:var(--accent);}
+  .hero-stack .line:nth-child(3) span{animation-delay:.25s;}
+  @keyframes riseUp{ to{ transform:translateY(0); } }
+  .hero-stack .cursor{
+    display:inline-block;width:0.42em;height:0.72em;background:var(--accent);
+    margin-left:10px;transform:translateY(0.06em);
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{opacity:0;} }
+
+  .hero-foot{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    margin-top:56px;flex-wrap:wrap;gap:24px;
+  }
+  .hero-sub{max-width:460px;font-size:1.02rem;line-height:1.65;color:var(--muted);}
+  .hero-sub b{color:var(--text);font-weight:500;}
+  .hero-actions{display:flex;gap:16px;flex-wrap:wrap;}
+  .btn{
+    font-family:'JetBrains Mono',monospace;font-size:13px;padding:14px 24px;
+    border-radius:2px;letter-spacing:0.02em;transition:all .25s;white-space:nowrap;
+  }
+  .btn-primary{background:var(--accent);color:#0a0a0c;font-weight:600;}
+  .btn-primary:hover{background:#ffc670;transform:translateY(-2px);}
+  .btn-ghost{border:1px solid var(--border);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+  .scroll-hint{
+    position:absolute;bottom:32px;left:40px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+    display:flex;align-items:center;gap:10px;letter-spacing:0.08em;
+  }
+  .scroll-hint::before{content:'';width:1px;height:30px;background:var(--border);display:block;}
+
+  /* ---------- MARQUEE ---------- */
+  .marquee-wrap{
+    border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    overflow:hidden;padding:18px 0;background:var(--bg-elev);
+  }
+  .marquee{
+    display:flex;gap:48px;white-space:nowrap;
+    animation:scroll 28s linear infinite;
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);
+    letter-spacing:0.05em;
+  }
+  .marquee span{display:flex;align-items:center;gap:48px;}
+  .marquee em{color:var(--accent);font-style:normal;margin-right:48px;}
+  @keyframes scroll{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-50%);}
+  }
+
+  /* ---------- MANIFESTO (full-viewport stacked type + hover reveal) ---------- */
+  .manifesto{
+    min-height:100vh;display:flex;align-items:center;
+    padding:80px 40px;position:relative;
+  }
+  .manifesto-inner{position:relative;max-width:1100px;margin:0 auto;width:100%;}
+  .manifesto-eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:0.1em;margin-bottom:28px;text-transform:uppercase;}
+  .manifesto h2{
+    font-family:'Space Grotesk',sans-serif;font-weight:500;
+    font-size:clamp(2.2rem, 6.5vw, 5.2rem);
+    line-height:1.08;letter-spacing:-0.02em;
+    max-width:920px;
+  }
+  .manifesto h2 .fill{color:var(--accent);font-style:italic;font-weight:400;}
+  .manifesto-reveal{
+    position:relative;display:inline-block;cursor:default;border-bottom:1px dashed var(--border);
+  }
+  .manifesto-reveal .doodle{
+    position:absolute;top:-160px;left:50%;transform:translateX(-50%) scale(0.9);
+    opacity:0;transition:opacity .35s ease, transform .35s ease;
+    pointer-events:none;width:220px;height:160px;
+  }
+  .manifesto-reveal:hover .doodle{opacity:1;transform:translateX(-50%) scale(1);}
+  .manifesto-reveal:hover{color:var(--accent);}
+  .manifesto-hint{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+    margin-top:36px;letter-spacing:0.04em;
+  }
+
+  /* ---------- SECTION SHARED ---------- */
+  section{padding:120px 40px;max-width:1200px;margin:0 auto;}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px;gap:24px;flex-wrap:wrap;}
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:0.08em;margin-bottom:12px;display:block;}
+  .section-head h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:600;letter-spacing:-0.01em;}
+  .section-head p{color:var(--muted);max-width:340px;font-size:0.95rem;line-height:1.6;}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;}
+  @media (max-width:800px){ .about-grid{grid-template-columns:1fr;} }
+  .about-text p{font-size:1.15rem;line-height:1.75;color:var(--muted);margin-bottom:20px;}
+  .about-text b{color:var(--text);font-weight:500;}
+  .stat-list{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--border);}
+  .stat-row{
+    display:flex;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--border);
+  }
+  .stat-row .label{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;}
+  .stat-row .val{font-family:'Space Grotesk',sans-serif;font-size:1rem;text-align:right;}
+
+  /* ---------- STACK LIST (big rows like weight explorer) ---------- */
+  .stack-list-wrap{border-top:1px solid var(--border);}
+  .stack-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:26px 0;border-bottom:1px solid var(--border);
+    transition:padding-left .3s ease, color .3s ease;
+  }
+  .stack-row:hover{padding-left:20px;color:var(--accent);}
+  .stack-row .name{
+    font-family:'Space Grotesk',sans-serif;font-weight:500;
+    font-size:clamp(1.4rem, 4vw, 2.6rem);letter-spacing:-0.01em;
+  }
+  .stack-row .meta{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+    letter-spacing:0.05em;white-space:nowrap;text-align:right;
+  }
+  .stack-row:hover .meta{color:var(--accent);}
+
+  /* ---------- TERMINAL TESTER (interactive, like the type tester) ---------- */
+  .tester-box{
+    border:1px solid var(--border);border-radius:6px;background:var(--bg-elev);overflow:hidden;
+  }
+  .tester-top{
+    display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);justify-content:space-between;
+  }
+  .tester-top .dots{display:flex;gap:6px;}
+  .tester-top .dots span{width:9px;height:9px;border-radius:50%;background:var(--border);}
+  .tester-body{padding:32px;font-family:'JetBrains Mono',monospace;font-size:14px;min-height:220px;}
+  .tester-line{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+  .tester-line .prompt{color:var(--accent);white-space:nowrap;}
+  .tester-line .out{color:var(--muted);line-height:1.7;}
+  .tester-input-row{display:flex;gap:10px;align-items:center;margin-top:6px;}
+  .tester-input-row .prompt{color:var(--accent);}
+  #tester-input{
+    background:transparent;border:none;outline:none;color:var(--text);
+    font-family:'JetBrains Mono',monospace;font-size:14px;flex:1;caret-color:var(--accent);
+  }
+  .tester-hint{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);padding:14px 32px;border-top:1px solid var(--border);letter-spacing:0.03em;}
+  .tester-chips{display:flex;gap:10px;flex-wrap:wrap;padding:0 32px 24px;}
+  .tester-chip{
+    font-family:'JetBrains Mono',monospace;font-size:11px;padding:7px 12px;border:1px solid var(--border);
+    border-radius:20px;color:var(--muted);cursor:pointer;transition:all .2s;background:transparent;
+  }
+  .tester-chip:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* ---------- PROJECTS ---------- */
+  .project-card{
+    border:1px solid var(--border);border-radius:4px;background:var(--bg-elev);
+    margin-bottom:20px;overflow:hidden;transition:border-color .3s;
+  }
+  .project-card:hover{border-color:var(--accent);}
+  .project-top{
+    display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+  }
+  .dots{display:flex;gap:6px;}
+  .dots span{width:9px;height:9px;border-radius:50%;background:var(--border);}
+  .project-body{padding:36px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;}
+  @media (max-width:700px){ .project-body{grid-template-columns:1fr;} }
+  .project-body h3{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:600;margin-bottom:10px;}
+  .project-body p{color:var(--muted);line-height:1.65;max-width:520px;font-size:0.98rem;}
+  .tag-row{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;}
+  .tag{
+    font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 10px;
+    border:1px solid var(--border);border-radius:2px;color:var(--muted);letter-spacing:0.03em;
+  }
+  .project-arrow{
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);
+    white-space:nowrap;
+  }
+
+  /* ---------- QUOTE (editorial, mirrors "from the designer") ---------- */
+  .quote-section{padding:60px 40px 120px;}
+  .quote-inner{
+    max-width:1000px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:44px;align-items:center;
+  }
+  @media (max-width:700px){ .quote-inner{grid-template-columns:1fr;text-align:center;} }
+  .quote-avatar{
+    width:110px;height:110px;border-radius:50%;
+    background:linear-gradient(135deg, var(--accent), #7a4a00);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-size:2.4rem;font-weight:600;color:#0a0a0c;
+    flex-shrink:0;overflow:hidden;position:relative;
+  }
+  .quote-avatar img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+  .quote-inner blockquote{
+    font-family:'Space Grotesk',sans-serif;font-size:clamp(1.3rem, 3vw, 1.9rem);
+    font-weight:400;line-height:1.45;letter-spacing:-0.01em;
+  }
+  .quote-inner cite{
+    display:block;margin-top:20px;font-style:normal;font-family:'JetBrains Mono',monospace;
+    font-size:12px;color:var(--muted);letter-spacing:0.05em;
+  }
+
+  /* ---------- FINAL CTA (oversized type) ---------- */
+  .final-cta{
+    text-align:center;padding:60px 40px 100px;
+  }
+  .final-cta .section-num{display:block;margin:0 auto 24px;}
+  .final-cta h2{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;
+    font-size:clamp(2.4rem,8vw,6rem);letter-spacing:-0.02em;line-height:1.02;margin-bottom:40px;
+  }
+  .final-cta h2 a{border-bottom:2px solid var(--accent);transition:color .25s;}
+  .final-cta h2 a:hover{color:var(--accent);}
+  .contact-links{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);}
+  .contact-links a:hover{color:var(--accent);}
+
+  footer{
+    border-top:1px solid var(--border);padding:28px 40px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+    flex-wrap:wrap;gap:12px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+    .hero-stack .line span{transform:translateY(0);}
+  }
+  /* ---------- JOURNEY (staged timeline) ---------- */
+  .journey-track{position:relative;border-top:1px solid var(--border);}
+  .journey-item{
+    display:grid;grid-template-columns:120px 1fr;gap:32px;
+    padding:36px 0;border-bottom:1px solid var(--border);
+  }
+  @media (max-width:700px){ .journey-item{grid-template-columns:1fr;gap:12px;} }
+  .journey-year{
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);
+    letter-spacing:0.05em;padding-top:4px;
+  }
+  .journey-item h3{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.5rem;
+    margin-bottom:10px;letter-spacing:-0.01em;
+  }
+  .journey-item p{color:var(--muted);line-height:1.7;font-size:0.98rem;max-width:640px;}
+  .journey-tail{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+    margin-top:32px;letter-spacing:0.04em;
+  }
+
+  /* ---------- PROJECT META SPEC ROW ---------- */
+  .meta-spec{
+    display:grid;grid-template-columns:repeat(4,auto);gap:28px;
+    padding:18px 32px;border-top:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+  }
+  @media (max-width:700px){ .meta-spec{grid-template-columns:repeat(2,1fr);row-gap:16px;} }
+  .meta-spec div span{display:block;}
+  .meta-spec .k{color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
+  .meta-spec .v{color:var(--text);font-size:12.5px;}
+
+  /* ---------- SKILL CATEGORY GRID ---------- */
+  .skill-cats{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--border);}
+  .skill-cat-row{
+    display:grid;grid-template-columns:140px 1fr;gap:24px;padding:28px 0;border-bottom:1px solid var(--border);
+  }
+  @media (max-width:700px){ .skill-cat-row{grid-template-columns:1fr;gap:10px;} }
+  .skill-cat-label{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);
+    letter-spacing:0.06em;text-transform:uppercase;padding-top:4px;
+  }
+  .skill-cat-tags{display:flex;flex-wrap:wrap;gap:10px;}
+  .skill-cat-tag{
+    font-family:'Space Grotesk',sans-serif;font-size:0.95rem;padding:9px 16px;
+    border:1px solid var(--border);border-radius:20px;color:var(--text);
+    transition:all .2s;
+  }
+  .skill-cat-tag:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* ---------- CONTACT ROWS (spec-sheet style) ---------- */
+  .contact-rows{max-width:520px;margin:0 auto 40px;border-top:1px solid var(--border);}
+  .contact-row-item{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px 4px;border-bottom:1px solid var(--border);text-align:left;
+    transition:padding-left .25s;
+  }
+  .contact-row-item:hover{padding-left:12px;}
+  .contact-row-item .k{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
+  .contact-row-item .v{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;display:flex;align-items:center;gap:10px;}
+  .contact-row-item .v .arrow{color:var(--accent);transition:transform .25s;}
+  .contact-row-item:hover .v .arrow{transform:translate(4px,-4px);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">clifford<span class="dot">.</span>dev</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#journey">Journey</a>
+    <a href="#work">Work</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-photo">
+    <img src="profile.jpg" alt="Clifford Wreifors" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="fallback" style="display:none;">CW</div>
+  </div>
+  <div class="hero-eyebrow"><span class="pulse"></span> AVAILABLE FOR PROJECTS</div>
+  <h1 class="hero-stack">
+    <span class="line"><span>Clifford</span></span>
+    <span class="line"><span>builds</span></span>
+    <span class="line"><span>things<span class="cursor"></span></span></span>
+  </h1>
+  <div class="hero-foot">
+    <p class="hero-sub">Business IT student in Accra, Ghana, who'd rather ship a working tool than
+    read another slide deck. <b>Full-stack apps, automation bots, and the occasional PDF generator
+    nobody asked for but everybody needed.</b></p>
+    <div class="hero-actions">
+      <a href="#work" class="btn btn-primary">See the work</a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+  </div>
+  <div class="scroll-hint mono">SCROLL</div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span><em>React</em> Node.js <em>Express</em> MongoDB <em>TypeScript</em> Python <em>Expo</em> Socket.io <em>Prisma</em> Paystack</span>
+    <span><em>React</em> Node.js <em>Express</em> MongoDB <em>TypeScript</em> Python <em>Expo</em> Socket.io <em>Prisma</em> Paystack</span>
+  </div>
+</div>
+
+<section class="manifesto">
+  <div class="manifesto-inner">
+    <div class="manifesto-eyebrow">// philosophy</div>
+    <h2 class="display">
+      Every build starts as a
+      <span class="manifesto-reveal">personal itch<svg class="doodle" viewBox="0 0 220 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="20" width="180" height="110" rx="6" stroke="var(--accent)" stroke-width="2"/>
+          <line x1="20" y1="48" x2="200" y2="48" stroke="var(--accent)" stroke-width="2"/>
+          <circle cx="34" cy="34" r="4" fill="var(--accent)"/>
+          <circle cx="48" cy="34" r="4" fill="var(--accent)"/>
+          <circle cx="62" cy="34" r="4" fill="var(--accent)"/>
+          <path d="M40 70 L60 90 L40 110" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="72" y1="110" x2="120" y2="110" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+        </svg></span>
+      before it's ever a <span class="fill">product</span> —
+      a broken exam prep routine, a game night that needed
+      structure, a booking system that didn't exist yet for
+      students who needed one.
+    </h2>
+    <p class="manifesto-hint mono">(hover the underlined phrase)</p>
+  </div>
+</section>
+
+<section id="journey">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-num mono">02 / JOURNEY</span>
+      <h2 class="display">Three stages, so far</h2>
+    </div>
+    <p>(scroll to read →)</p>
+  </div>
+  <div class="journey-track reveal">
+    <div class="journey-item">
+      <div class="journey-year">2022–23</div>
+      <div>
+        <h3>Curiosity, no direction yet</h3>
+        <p>Started messing with HTML/CSS to build small pages for friends and hobby projects —
+        no framework, no plan, just wanting to see something I made show up in a browser.</p>
+      </div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2024</div>
+      <div>
+        <h3>Finding the backend</h3>
+        <p>Picked up Node.js and databases while studying Business IT — realized the interesting
+        problems were usually on the server side: how data is modeled, how systems talk to each other.</p>
+      </div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2025–26</div>
+      <div>
+        <h3>Shipping full products</h3>
+        <p>Started finishing what I started — real auth, real payments, real deployments.
+        StayEase Ghana and Budgeting Suite are what that looks like: complete, working systems,
+        not just prototypes.</p>
+      </div>
+    </div>
+  </div>
+  <p class="journey-tail mono">still stage 3 — still figuring out what stage 4 looks like</p>
+</section>
+
+<section id="about">
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <span class="section-num mono">01 / ABOUT</span>
+      <p>I'm a Business IT student at UPSA in Accra, spending equal time in lecture halls and in the
+      terminal. Most of what I build starts as a personal itch — <b>a bot to run a game with friends,
+      a way to survive exam season, a booking site for hostels near campus</b> — and turns into
+      something I keep iterating on long after the original problem is solved.</p>
+      <p>I like tools that are opinionated but simple: something a non-technical friend can pick up
+      in two minutes. That bias shows up in everything from my code to how I write documentation.</p>
+    </div>
+    <div class="stat-list reveal">
+      <div class="stat-row"><span class="label">Based in</span><span class="val">Accra, Ghana</span></div>
+      <div class="stat-row"><span class="label">Studying</span><span class="val">Business IT, UPSA</span></div>
+      <div class="stat-row"><span class="label">Focus</span><span class="val">Full-stack & automation</span></div>
+      <div class="stat-row"><span class="label">Stack</span><span class="val">React / Node.js / Python</span></div>
+      <div class="stat-row"><span class="label">Status</span><span class="val" style="color:var(--accent)">Open to work</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-num mono">03 / STACK</span>
+      <h2 class="display">What I reach for</h2>
+    </div>
+    <p>Ranked roughly by how often it shows up in a commit log.</p>
+  </div>
+  <div class="stack-list-wrap reveal">
+    <div class="stack-row"><span class="name display">React & Next.js</span><span class="meta">FRONTEND — DAILY DRIVER</span></div>
+    <div class="stack-row"><span class="name display">Node.js & Express</span><span class="meta">BACKEND — API LAYER</span></div>
+    <div class="stack-row"><span class="name display">MongoDB & Prisma</span><span class="meta">DATA — SCHEMA & QUERIES</span></div>
+    <div class="stack-row"><span class="name display">Python</span><span class="meta">SCRIPTING — TOOLING & AUTOMATION</span></div>
+    <div class="stack-row"><span class="name display">Expo / React Native</span><span class="meta">MOBILE — CROSS-PLATFORM</span></div>
+    <div class="stack-row"><span class="name display">Socket.io & JWT</span><span class="meta">REAL-TIME & AUTH</span></div>
+  </div>
+</section>
+
+<section id="capabilities">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-num mono">04 / CAPABILITIES</span>
+      <h2 class="display">What I can take on</h2>
+    </div>
+    <p>Grouped by where in the stack it lives.</p>
+  </div>
+  <div class="skill-cats reveal">
+    <div class="skill-cat-row">
+      <span class="skill-cat-label">(Frontend)</span>
+      <div class="skill-cat-tags">
+        <span class="skill-cat-tag">React</span>
+        <span class="skill-cat-tag">Next.js</span>
+        <span class="skill-cat-tag">Responsive UI</span>
+        <span class="skill-cat-tag">Tailwind CSS</span>
+      </div>
+    </div>
+    <div class="skill-cat-row">
+      <span class="skill-cat-label">(Backend)</span>
+      <div class="skill-cat-tags">
+        <span class="skill-cat-tag">Node.js</span>
+        <span class="skill-cat-tag">Express</span>
+        <span class="skill-cat-tag">REST APIs</span>
+        <span class="skill-cat-tag">JWT Auth</span>
+      </div>
+    </div>
+    <div class="skill-cat-row">
+      <span class="skill-cat-label">(Data)</span>
+      <div class="skill-cat-tags">
+        <span class="skill-cat-tag">MongoDB</span>
+        <span class="skill-cat-tag">Prisma</span>
+        <span class="skill-cat-tag">SQL</span>
+        <span class="skill-cat-tag">Data modeling</span>
+      </div>
+    </div>
+    <div class="skill-cat-row">
+      <span class="skill-cat-label">(Mobile)</span>
+      <div class="skill-cat-tags">
+        <span class="skill-cat-tag">Expo</span>
+        <span class="skill-cat-tag">React Native</span>
+      </div>
+    </div>
+    <div class="skill-cat-row">
+      <span class="skill-cat-label">(Tooling)</span>
+      <div class="skill-cat-tags">
+        <span class="skill-cat-tag">Python</span>
+        <span class="skill-cat-tag">Git</span>
+        <span class="skill-cat-tag">Payment APIs</span>
+        <span class="skill-cat-tag">Socket.io</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tester">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-num mono">05 / TRY IT</span>
+      <h2 class="display">Poke the terminal</h2>
+    </div>
+    <p>A tiny fake shell. Type a command below or tap a suggestion.</p>
+  </div>
+  <div class="tester-box reveal">
+    <div class="tester-top">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <span>clifford@portfolio — zsh</span>
+      <span></span>
+    </div>
+    <div class="tester-body" id="tester-log">
+      <div class="tester-line"><span class="prompt">$</span><span class="out">whoami</span></div>
+      <div class="tester-line"><span class="out">Clifford — Business IT student, full-stack builder, Accra, GH.</span></div>
+    </div>
+    <div class="tester-input-row" style="padding:0 32px 28px;">
+      <span class="prompt mono">$</span>
+      <input id="tester-input" type="text" placeholder="try: help" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="tester-chips">
+      <button class="tester-chip" data-cmd="help">help</button>
+      <button class="tester-chip" data-cmd="projects">projects</button>
+      <button class="tester-chip" data-cmd="stack">stack</button>
+      <button class="tester-chip" data-cmd="contact">contact</button>
+    </div>
+    <div class="tester-hint">Not a real shell — just enough JavaScript to be fun. Try "help".</div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-num mono">06 / SELECTED WORK (05)</span>
+      <h2 class="display">Things I've shipped</h2>
+    </div>
+    <p>A few projects that started as "wouldn't it be cool if" and turned into real, running code.</p>
+  </div>
+
+  <a href="https://github.com/Levia-cifer/Hostel-web" target="_blank" class="project-card reveal" style="display:block;">
+    <div class="project-top"><div class="dots"><span></span><span></span><span></span></div> stayease-ghana / hostel-web</div>
+    <div class="project-body">
+      <div>
+        <h3>StayEase Ghana</h3>
+        <p>A full-stack hostel booking platform for students around UPSA and University of Ghana —
+        listings with filters, a booking flow backed by Paystack, JWT auth, an admin panel, and
+        real-time availability via Socket.io.</p>
+        <div class="tag-row">
+          <span class="tag">React + Vite</span><span class="tag">Express</span><span class="tag">MongoDB</span><span class="tag">Paystack</span><span class="tag">Socket.io</span>
+        </div>
+      </div>
+      <div class="project-arrow">FULL-STACK →</div>
+    </div>
+    <div class="meta-spec">
+      <div><span class="k">Role</span><span class="v">Solo build</span></div>
+      <div><span class="k">Type</span><span class="v">Full-stack web</span></div>
+      <div><span class="k">Year</span><span class="v">2026</span></div>
+      <div><span class="k">Status</span><span class="v">Complete</span></div>
+    </div>
+  </a>
+
+  <a href="https://github.com/Levia-cifer/budgeting-suite" target="_blank" class="project-card reveal" style="display:block;">
+    <div class="project-top"><div class="dots"><span></span><span></span><span></span></div> budgeting-suite / monorepo</div>
+    <div class="project-body">
+      <div>
+        <h3>Budgeting Suite</h3>
+        <p>A mobile-first hybrid budgeting app spanning web, mobile, and API in a single pnpm
+        monorepo — Plaid sandbox integration for bank linking, Prisma-backed data, and an Expo
+        build pipeline for a real installable app.</p>
+        <div class="tag-row">
+          <span class="tag">TypeScript</span><span class="tag">Next.js</span><span class="tag">Expo</span><span class="tag">Prisma</span><span class="tag">Plaid</span>
+        </div>
+      </div>
+      <div class="project-arrow">MONOREPO →</div>
+    </div>
+    <div class="meta-spec">
+      <div><span class="k">Role</span><span class="v">Solo build</span></div>
+      <div><span class="k">Type</span><span class="v">Web + mobile + API</span></div>
+      <div><span class="k">Year</span><span class="v">2026</span></div>
+      <div><span class="k">Status</span><span class="v">In progress</span></div>
+    </div>
+  </a>
+
+  <a href="https://github.com/Levia-cifer/myhair.com" target="_blank" class="project-card reveal" style="display:block;">
+    <div class="project-top"><div class="dots"><span></span><span></span><span></span></div> myhair.com / index.html</div>
+    <div class="project-body">
+      <div>
+        <h3>MyHair.com</h3>
+        <p>A static marketing site with video-driven visuals — built to showcase products with
+        a lightweight HTML/CSS/JS stack and no framework overhead.</p>
+        <div class="tag-row">
+          <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span>
+        </div>
+      </div>
+      <div class="project-arrow">STATIC SITE →</div>
+    </div>
+    <div class="meta-spec">
+      <div><span class="k">Role</span><span class="v">Solo build</span></div>
+      <div><span class="k">Type</span><span class="v">Marketing site</span></div>
+      <div><span class="k">Year</span><span class="v">2026</span></div>
+      <div><span class="k">Status</span><span class="v">Complete</span></div>
+    </div>
+  </a>
+
+  <div class="project-card reveal">
+    <div class="project-top"><div class="dots"><span></span><span></span><span></span></div> whatsapp-rpg-bot / index.js</div>
+    <div class="project-body">
+      <div>
+        <h3>Solo Leveling WhatsApp Bot</h3>
+        <p>A full RPG system built on top of WhatsApp using Node.js and Baileys — class selection,
+        XP and rank progression, dungeon runs, and an admin config layer for managing the game economy.</p>
+        <div class="tag-row">
+          <span class="tag">Node.js</span><span class="tag">Baileys</span><span class="tag">Game Design</span><span class="tag">QR Auth</span>
+        </div>
+      </div>
+      <div class="project-arrow">CHAT-BASED →</div>
+    </div>
+    <div class="meta-spec">
+      <div><span class="k">Role</span><span class="v">Solo build</span></div>
+      <div><span class="k">Type</span><span class="v">WhatsApp bot</span></div>
+      <div><span class="k">Year</span><span class="v">2025</span></div>
+      <div><span class="k">Status</span><span class="v">Complete</span></div>
+    </div>
+  </div>
+
+  <div class="project-card reveal">
+    <div class="project-top"><div class="dots"><span></span><span></span><span></span></div> study-guide-generator / build.py</div>
+    <div class="project-body">
+      <div>
+        <h3>Exam Study Guide Generator</h3>
+        <p>Turns dense lecture PDFs into clean, formatted study guides — auto-generating diagrams
+        with Matplotlib and laying out the final document with ReportLab. Built out of exam-week necessity.</p>
+        <div class="tag-row">
+          <span class="tag">Python</span><span class="tag">ReportLab</span><span class="tag">Matplotlib</span><span class="tag">PDF</span>
+        </div>
+      </div>
+      <div class="project-arrow">TOOLING →</div>
+    </div>
+    <div class="meta-spec">
+      <div><span class="k">Role</span><span class="v">Solo build</span></div>
+      <div><span class="k">Type</span><span class="v">CLI / PDF tool</span></div>
+      <div><span class="k">Year</span><span class="v">2025</span></div>
+      <div><span class="k">Status</span><span class="v">Complete</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="quote-section">
+  <div class="quote-inner reveal">
+    <div class="quote-avatar">
+      <img src="profile.jpg" alt="Clifford Wreifors" onerror="this.style.display='none';">
+      C
+    </div>
+    <div>
+      <blockquote>"I don't set out to build a portfolio piece. I build the thing that's
+      annoying me this week — and if it's still useful a month later, that's how I know it was
+      worth finishing."</blockquote>
+      <cite>— Clifford, on how most of these projects started</cite>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <span class="section-num mono">07 / CONTACT</span>
+  <h2 class="display">Got a project?<br>Let's talk about it.</h2>
+  <div class="contact-rows reveal">
+    <a href="mailto:cliffordwreifors@gmail.com" class="contact-row-item">
+      <span class="k">Email</span>
+      <span class="v">cliffordwreifors@gmail.com <span class="arrow">↗</span></span>
+    </a>
+    <a href="https://github.com/Levia-cifer" target="_blank" class="contact-row-item">
+      <span class="k">GitHub</span>
+      <span class="v">Levia-cifer <span class="arrow">↗</span></span>
+    </a>
+    <a href="https://www.linkedin.com/in/clifford-wreifors-083987381/" target="_blank" class="contact-row-item">
+      <span class="k">LinkedIn</span>
+      <span class="v">Clifford Wreifors <span class="arrow">↗</span></span>
+    </a>
+    <a href="#" class="contact-row-item">
+      <span class="k">Twitter / X</span>
+      <span class="v">Follow <span class="arrow">↗</span></span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Clifford Wreifors. Built with code, not a template.</span>
+  <span>Accra, Ghana</span>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Terminal tester
+  const log = document.getElementById('tester-log');
+  const input = document.getElementById('tester-input');
+  const chips = document.querySelectorAll('.tester-chip');
+
+  const responses = {
+    help: 'available commands: help, whoami, projects, stack, contact, clear',
+    whoami: 'Clifford — Business IT student, full-stack builder, Accra, GH.',
+    projects: 'StayEase Ghana · Budgeting Suite · MyHair.com · WhatsApp RPG Bot · Study Guide Generator',
+    stack: 'React, Next.js, Node.js, Express, MongoDB, Prisma, Python, Expo, Socket.io',
+    contact: 'cliffordwreifors@gmail.com — or the links in the footer below.',
+  };
+
+  function addLine(promptText, outputText, isCommand){
+    const line1 = document.createElement('div');
+    line1.className = 'tester-line';
+    if(isCommand){
+      line1.innerHTML = '<span class="prompt">$</span><span class="out">' + promptText + '</span>';
+      log.appendChild(line1);
+    }
+    if(outputText){
+      const line2 = document.createElement('div');
+      line2.className = 'tester-line';
+      line2.innerHTML = '<span class="out">' + outputText + '</span>';
+      log.appendChild(line2);
+    }
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function runCommand(cmd){
+    const clean = cmd.trim().toLowerCase();
+    if(!clean) return;
+    if(clean === 'clear'){
+      log.innerHTML = '';
+      return;
+    }
+    const out = responses[clean] || ('command not found: ' + clean + ' — try "help"');
+    addLine(cmd, out, true);
+  }
+
+  input.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){
+      runCommand(input.value);
+      input.value = '';
+    }
+  });
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const cmd = chip.getAttribute('data-cmd');
+      runCommand(cmd);
+    });
+  });
+</script>
+
+</body>
+</html>
